@@ -1,0 +1,1 @@
+MinimalSignalComps is a refactoring of MinimalComps to use Robert Penners Signals.
