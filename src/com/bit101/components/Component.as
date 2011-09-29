@@ -40,11 +40,13 @@ package com.bit101.components
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.filters.DropShadowFilter;
+	import org.osflash.signals.natives.base.SignalSprite;
+	import org.osflash.signals.Signal;
 
-	[Event(name="resize", type="flash.events.Event")]
-	[Event(name="draw", type="flash.events.Event")]
-	public class Component extends Sprite
+	public class Component extends SignalSprite
 	{
+		public var resized:Signal;
+		public var drawn:Signal;
 		// NOTE: Flex 4 introduces DefineFont4, which is used by default and does not work in native text fields.
 		// Use the embedAsCFF="false" param to switch back to DefineFont4. In earlier Flex 4 SDKs this was cff="false".
 		// So if you are using the Flex 3.x sdk compiler, switch the embed statment below to expose the correct version.
@@ -59,8 +61,6 @@ package com.bit101.components
 		protected var _height:Number = 0;
 		protected var _tag:int = -1;
 		protected var _enabled:Boolean = true;
-		
-		public static const DRAW:String = "draw";
 
 		/**
 		 * Constructor
@@ -83,6 +83,8 @@ package com.bit101.components
 		 */
 		protected function init():void
 		{
+			resized = new Signal();
+			drawn = new Signal();
 			addChildren();
 			invalidate();
 		}
@@ -150,7 +152,7 @@ package com.bit101.components
 		{
 			_width = w;
 			_height = h;
-			dispatchEvent(new Event(Event.RESIZE));
+			resized.dispatch();
 			invalidate();
 		}
 		
@@ -159,7 +161,7 @@ package com.bit101.components
 		 */
 		public function draw():void
 		{
-			dispatchEvent(new Event(Component.DRAW));
+			drawn.dispatch();
 		}
 		
 		
@@ -192,7 +194,7 @@ package com.bit101.components
 		{
 			_width = w;
 			invalidate();
-			dispatchEvent(new Event(Event.RESIZE));
+			resized.dispatch();
 		}
 		override public function get width():Number
 		{
@@ -206,7 +208,7 @@ package com.bit101.components
 		{
 			_height = h;
 			invalidate();
-			dispatchEvent(new Event(Event.RESIZE));
+			resized.dispatch();
 		}
 		override public function get height():Number
 		{
